@@ -7,8 +7,8 @@
 
     function addToSchedule(className, url = '#') {
         var parent = $('#schedule');
-        parent.find('.dropdown-menu').append('<li><a href="' + url + '">' + className + '</a></li>');
-        parent.find('tbody').append('<tr><td><li><a href="' + url + '">' + className + '</a></li></td></tr>');
+        //parent.find('.dropdown-menu').append('<li><a href="' + url + '">' + className + '</a></li>');
+        parent.find('tbody').append('<tr><td><li>' + className + '</li></td></tr>');
     }
 
     function addTopic(topicText = '', username = 'Anonymous', votes = 0, voteStatus = 0, topicID = 0) {

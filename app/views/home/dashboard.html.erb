@@ -109,7 +109,7 @@
                                         <label for="comment">Topic:</label>
                                         <textarea class="form-control" rows="1" id="newTopic"></textarea>
                                     </div>
-                                    <input type="hidden" class="form-control" rows="1" id="email" value="<%= current_user.email %>" />
+                                    <input type="hidden" class="form-control" rows="1" id="email" value="<%= current_user.try(:email) %>" />
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-primary" data-dismiss="modal">Submit</button>
