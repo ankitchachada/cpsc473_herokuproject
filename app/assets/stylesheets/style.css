@@ -74,7 +74,11 @@ body {
 }
 
 th{
-  text-align: center;
+  text-align: center !important;
+}
+
+#schedule{
+    text-align: center;
 }
 
 .table {
