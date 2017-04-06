@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   resources :topics
   # Example of regular route:
   get 'dashboard' => 'home#dashboard'
+  get 'forgot_password' => 'home#forgot_password'
   get 'sign_up' => 'home#sign_up'
 
   # Example of named route that can be invoked with purchase_url(id: product.id)
