@@ -53,7 +53,7 @@
 
 
              }
-    }); 
+            }); 
             votes = votes - temp + voteStatus;
             console.log(temp + " :temp");
             topicPanel.data({
@@ -69,7 +69,21 @@
 
         topicPanel.show();
     }
+    $(document).on('click', '#deleteTopic', function() {
+        var topicPanel = $(this).parents('.panel')
+        var topicID = topicPanel.data('topicID');
+        removeTopic(topicID);
+        console.log('Deleted topic ' + topicID);
+         $.ajax({
+                type: "DELETE",
+                dataType: "json",
+                url: "/topics/"+ topicID, 
+                success: function(data){
 
+             }
+            });
+
+    });
 
     function removeTopic(topicID) {
         $(TOPIC_PANEL_PARENT).find('#' + topicID).remove();
