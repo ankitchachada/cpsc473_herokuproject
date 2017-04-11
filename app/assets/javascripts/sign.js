@@ -11,7 +11,7 @@ $(document).on('click', '#main-form .btn-default', function() {
        		window.location = 'dashboard'
     	},
     	error: function (request, status, error) {
-        	alert(request.responseText);
+        	alert("Invalid username or password");
     	}
     })
     return false; // prevents normal behaviour

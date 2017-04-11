@@ -1,12 +1,14 @@
 class TopicsController < ApplicationController
   before_action :set_topic, only: [:show, :edit, :update, :destroy]
+  before_action :set_user
 
   # GET /topics
   # GET /topics.json
   def index
     @topics = Topic.all
+    
     respond_to do |format|
-      format.json { render json: @topics.to_json}
+      format.json { render json: @topics.to_json(:include => :topic_users)}
     end
   end
 
@@ -44,11 +46,19 @@ class TopicsController < ApplicationController
   # PATCH/PUT /topics/1
   # PATCH/PUT /topics/1.json
   def update
-    raise params.inspect
+    @tu = TopicUser.find_by_user_id_and_topic_id(current_user.id,params[:id])
+    if @tu.nil?
+      @tu = @topic.topic_users.create
+      @tu.user_id = current_user.id
+    end
+    @tu.vote_status = params[:voteStatus]
+    @tu.votes = params[:votes].to_i 
+    @tu.save
+    
     respond_to do |format|
-      if @topic.update(topic_params)
-        format.html { redirect_to @topic, notice: 'Topic was successfully updated.' }
-        format.json { render :show, status: :ok, location: @topic }
+      if @topic.save
+        #format.html { redirect_to @topic, notice: 'Topic was successfully updated.' }
+        format.json { render json: @topic.to_json}
       else
         format.html { render :edit }
         format.json { render json: @topic.errors, status: :unprocessable_entity }
@@ -79,5 +89,9 @@ class TopicsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def topic_params
       params.require(:topic).permit(:title, :user_id, :votes)
+    end
+
+    def set_user
+      cookies[:username] = current_user.id || 'guest'
     end
 end

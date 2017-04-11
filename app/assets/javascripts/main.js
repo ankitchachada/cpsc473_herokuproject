@@ -34,6 +34,7 @@
             var topicID = topicPanel.data('topicID');
             console.log(topicID);
             var votes = topicPanel.data('votes');
+            //alert(votes);
             var voteStatus = topicPanel.data('voteStatus');
             var temp = voteStatus;
 
@@ -44,18 +45,17 @@
             } else {
                 return;
             }
-             $.ajax({
-        type: "PUT",
-        dataType: "json",
-        url: "/topics/"+ topicID + "?voteStatus=" + voteStatus, 
-        success: function(data){
-           var as = data;
-           for(var i=0; i < as.length ; i++){
-            addTopic(as[i].title,as[i].title, 1, 1, as[i].id);
-         }
-        }
+            $.ajax({
+                type: "PUT",
+                dataType: "json",
+                url: "/topics/"+ topicID + "?voteStatus=" + voteStatus + "&votes="+ voteStatus, 
+                success: function(data){
+
+
+             }
     }); 
             votes = votes - temp + voteStatus;
+            console.log(temp + " :temp");
             topicPanel.data({
                 'votes': votes,
                 'voteStatus': voteStatus
@@ -64,6 +64,7 @@
 
             console.log('Voted on topic: "' + topicPanel.data('topic') + '" (ID: ' + topicID + ')\tvoteStatus: ' + voteStatus);
         });
+        console.log(voteStatus+ "hi")
         updateTopicVotes(topicID);
 
         topicPanel.show();
@@ -111,12 +112,12 @@
         console.log("Creating Topic: " + topic);
         addTopic(topic,email);    
         $.ajax({
-  type: "POST",
-  url: "/topics",
-  data: {topic: {title: topic}},
-  success: "ok",
-  dataType: "script"
-});
+          type: "POST",
+          url: "/topics",
+          data: {topic: {title: topic}},
+          success: "ok",
+          dataType: "script"
+        });
 
     });
 
@@ -125,13 +126,9 @@
         // NOTE: Load all schedule and topic info here!
 
         setClassName('CPSC 473');
-
+        var userId = document.cookie.replace(/(?:(?:^|.*;\s*)username\s*\=\s*([^;]*).*$)|^.*$/, "$1");
         console.log("Loading Schedule");
         addToSchedule('CPSC 473', '/r/CPSC473');
-        addToSchedule('CPSC 440');
-        addToSchedule('CPSC 420');
-        addToSchedule('MATH 435');
-
         console.log("Loading Topics.");
         $.ajax({
         type: "GET",
@@ -139,8 +136,56 @@
         url: "/topics",
         success: function(data){
            var as = data;
+           //sorting the topic
+           console.log(window.location.href + " jj" );
+           if (window.location.href.indexOf("controversial") == -1) {
+           as.sort(function(a, b) {
+             var a_votes = 0;
+             for (var j = 0; j < a.topic_users.length; j++){
+                    a_votes += a.topic_users[j].votes;
+             }
+             var b_votes = 0;
+             for (var j = 0; j < b.topic_users.length; j++){
+                b_votes += b.topic_users[j].votes;
+             }
+            return b_votes - a_votes;
+          });
+          console.log('sorting by top votes');
+       } else {
+          console.log('sorting by controversial');
+          as.sort(function(a, b) {
+
+          var a_votes = 0;
+          for (var j = 0; j < a.topic_users.length; j++){
+            a_votes += a.topic_users[j].votes;
+          }
+          var a_controversy = a_votes / Math.max(Math.abs(a_votes),1);
+          console.log(a_controversy)
+          var b_votes = 0;
+          for (var j = 0; j < b.topic_users.length; j++){
+            b_votes += b.topic_users[j].votes;
+          }
+          var b_controversy = b_votes / Math.max(Math.abs(b_votes),1);
+          return b_controversy - a_controversy;
+        });
+       }
+
+           var voteStatus2 = 0;
            for(var i=0; i < as.length ; i++){
-            addTopic(as[i].title,as[i].email, 1, 1, as[i].id);
+            var votess = 0;
+            var tc = as[i].topic_users.length;
+            console.log("length" + tc)
+            for (var j = 0; j < tc; j++){
+                if (as[i].topic_users[j].user_id == userId){
+                    voteStatus2 =  as[i].topic_users[j].vote_status;
+                }
+
+                votess = votess + as[i].topic_users[j].votes;
+
+                
+            }
+            //This will load all the topics with votes
+            addTopic(as[i].title,as[i].email, votess, voteStatus2, as[i].id);
          }
         }
     }); 
@@ -154,7 +199,7 @@
     window.addToSchedule = addToSchedule;
     window.addTopic = addTopic;
     window.removeTopic = removeTopic;
-    // window.updateTopicVotes = updateTopicVotes;      // only used internally
+    //window.updateTopicVotes = updateTopicVotes;      // only used internally
     window.setClassName = setClassName;
 
 })(window);
