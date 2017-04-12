@@ -138,6 +138,7 @@
 
         setClassName('CPSC 473');
         var userId = document.cookie.replace(/(?:(?:^|.*;\s*)username\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+        console.log(userId + " userid");
         console.log("Loading Schedule");
         addToSchedule('CPSC 473', '/r/CPSC473');
         console.log("Loading Topics.");

@@ -92,6 +92,6 @@ class TopicsController < ApplicationController
     end
 
     def set_user
-      cookies[:username] = current_user.id || 'guest'
+      cookies[:username] = current_user.try(:id) || 'guest'
     end
 end
