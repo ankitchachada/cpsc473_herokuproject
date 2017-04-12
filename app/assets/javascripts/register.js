@@ -14,7 +14,7 @@ $(document).on('click', '#signup-form .btn-default', function() {
        		window.location = 'dashboard'
     	},
     	error: function (request, status, error) {
-        	alert(request.responseText);
+        	console.log(JSON.parse(request.responseText));
     	}
     })
     return false; // prevents normal behaviour

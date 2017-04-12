@@ -64,9 +64,7 @@
 
             console.log('Voted on topic: "' + topicPanel.data('topic') + '" (ID: ' + topicID + ')\tvoteStatus: ' + voteStatus);
         });
-        console.log(voteStatus+ "hi")
         updateTopicVotes(topicID);
-
         topicPanel.show();
     }
     $(document).on('click', '#deleteTopic', function() {
@@ -79,7 +77,6 @@
                 dataType: "json",
                 url: "/topics/"+ topicID, 
                 success: function(data){
-
              }
             });
 
@@ -150,8 +147,7 @@
         url: "/topics",
         success: function(data){
            var as = data;
-           //sorting the topic
-           console.log(window.location.href + " jj" );
+           //sorting the topics
            if (window.location.href.indexOf("controversial") == -1) {
            as.sort(function(a, b) {
              var a_votes = 0;
@@ -195,9 +191,7 @@
                 }
 
                 votess = votess + as[i].topic_users[j].votes;
-
-                
-            }
+          }
             //This will load all the topics with votes
             addTopic(as[i].title,as[i].email, votess, voteStatus2, as[i].id);
          }
