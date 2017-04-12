@@ -7,15 +7,23 @@ $(document).on('click', '#signup-form .btn-default', function() {
     $.ajax({
         type: "POST",
         url: 'users', //sumbits it to the given url of the form
-        data: {user: {email: email, password: password, password_confirmation: passwordc,firstname: fname, lastname: lname }}, 
+        data: {
+            user: {
+                email: email,
+                password: password,
+                password_confirmation: passwordc,
+                firstname: fname,
+                lastname: lname
+            }
+        },
         dataType: "JSON",
         success: function(data, textStatus) {
-        	console.log(data);
-       		window.location = 'dashboard'
-    	},
-    	error: function (request, status, error) {
-        	console.log(JSON.parse(request.responseText));
-    	}
+            console.log(data);
+            window.location = 'dashboard'
+        },
+        error: function(request, status, error) {
+            console.log(JSON.parse(request.responseText));
+        }
     })
     return false; // prevents normal behaviour
 });

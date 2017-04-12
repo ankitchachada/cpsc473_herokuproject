@@ -48,12 +48,12 @@
             $.ajax({
                 type: "PUT",
                 dataType: "json",
-                url: "/topics/"+ topicID + "?voteStatus=" + voteStatus + "&votes="+ voteStatus, 
-                success: function(data){
+                url: "/topics/" + topicID + "?voteStatus=" + voteStatus + "&votes=" + voteStatus,
+                success: function(data) {
 
 
-             }
-            }); 
+                }
+            });
             votes = votes - temp + voteStatus;
             console.log(temp + " :temp");
             topicPanel.data({
@@ -72,13 +72,12 @@
         var topicID = topicPanel.data('topicID');
         removeTopic(topicID);
         console.log('Deleted topic ' + topicID);
-         $.ajax({
-                type: "DELETE",
-                dataType: "json",
-                url: "/topics/"+ topicID, 
-                success: function(data){
-             }
-            });
+        $.ajax({
+            type: "DELETE",
+            dataType: "json",
+            url: "/topics/" + topicID,
+            success: function(data) {}
+        });
 
     });
 
@@ -121,19 +120,23 @@
         if (topic == '') return;
         $('#newTopic').val('');
         console.log("Creating Topic: " + topic);
-        addTopic(topic,email);    
+        addTopic(topic, email);
         $.ajax({
-          type: "POST",
-          url: "/topics",
-          data: {topic: {title: topic}},
-          success: "ok",
-          dataType: "script"
+            type: "POST",
+            url: "/topics",
+            data: {
+                topic: {
+                    title: topic
+                }
+            },
+            success: "ok",
+            dataType: "script"
         });
 
     });
 
     $(document).ready(function() {
-        
+
         // NOTE: Load all schedule and topic info here!
 
         setClassName('CPSC 473');
@@ -143,65 +146,65 @@
         addToSchedule('CPSC 473', '/r/CPSC473');
         console.log("Loading Topics.");
         $.ajax({
-        type: "GET",
-        dataType: "json",
-        url: "/topics",
-        success: function(data){
-           var as = data;
-           //sorting the topics
-           if (window.location.href.indexOf("controversial") == -1) {
-           as.sort(function(a, b) {
-             var a_votes = 0;
-             for (var j = 0; j < a.topic_users.length; j++){
-                    a_votes += a.topic_users[j].votes;
-             }
-             var b_votes = 0;
-             for (var j = 0; j < b.topic_users.length; j++){
-                b_votes += b.topic_users[j].votes;
-             }
-            return b_votes - a_votes;
-          });
-          console.log('sorting by top votes');
-       } else {
-          console.log('sorting by controversial');
-          as.sort(function(a, b) {
+            type: "GET",
+            dataType: "json",
+            url: "/topics",
+            success: function(data) {
+                var as = data;
+                //sorting the topics
+                if (window.location.href.indexOf("controversial") == -1) {
+                    as.sort(function(a, b) {
+                        var a_votes = 0;
+                        for (var j = 0; j < a.topic_users.length; j++) {
+                            a_votes += a.topic_users[j].votes;
+                        }
+                        var b_votes = 0;
+                        for (var j = 0; j < b.topic_users.length; j++) {
+                            b_votes += b.topic_users[j].votes;
+                        }
+                        return b_votes - a_votes;
+                    });
+                    console.log('sorting by top votes');
+                } else {
+                    console.log('sorting by controversial');
+                    as.sort(function(a, b) {
 
-          var a_votes = 0;
-          for (var j = 0; j < a.topic_users.length; j++){
-            a_votes += a.topic_users[j].votes;
-          }
-          var a_controversy = a_votes / Math.max(Math.abs(a_votes),1);
-          console.log(a_controversy)
-          var b_votes = 0;
-          for (var j = 0; j < b.topic_users.length; j++){
-            b_votes += b.topic_users[j].votes;
-          }
-          var b_controversy = b_votes / Math.max(Math.abs(b_votes),1);
-          return b_controversy - a_controversy;
-        });
-       }
-
-           var voteStatus2 = 0;
-           for(var i=0; i < as.length ; i++){
-            var votess = 0;
-            var tc = as[i].topic_users.length;
-            console.log("length" + tc)
-            for (var j = 0; j < tc; j++){
-                if (as[i].topic_users[j].user_id == userId){
-                    voteStatus2 =  as[i].topic_users[j].vote_status;
+                        var a_votes = 0;
+                        for (var j = 0; j < a.topic_users.length; j++) {
+                            a_votes += a.topic_users[j].votes;
+                        }
+                        var a_controversy = a_votes / Math.max(Math.abs(a_votes), 1);
+                        console.log(a_controversy)
+                        var b_votes = 0;
+                        for (var j = 0; j < b.topic_users.length; j++) {
+                            b_votes += b.topic_users[j].votes;
+                        }
+                        var b_controversy = b_votes / Math.max(Math.abs(b_votes), 1);
+                        return b_controversy - a_controversy;
+                    });
                 }
 
-                votess = votess + as[i].topic_users[j].votes;
-          }
-            //This will load all the topics with votes
-            addTopic(as[i].title,as[i].email, votess, voteStatus2, as[i].id);
-         }
-        }
-    }); 
-        
-        
-        
-        
+                var voteStatus2 = 0;
+                for (var i = 0; i < as.length; i++) {
+                    var votess = 0;
+                    var tc = as[i].topic_users.length;
+                    console.log("length" + tc)
+                    for (var j = 0; j < tc; j++) {
+                        if (as[i].topic_users[j].user_id == userId) {
+                            voteStatus2 = as[i].topic_users[j].vote_status;
+                        }
+
+                        votess = votess + as[i].topic_users[j].votes;
+                    }
+                    //This will load all the topics with votes
+                    addTopic(as[i].title, as[i].email, votess, voteStatus2, as[i].id);
+                }
+            }
+        });
+
+
+
+
     });
 
 
